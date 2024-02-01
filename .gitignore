@@ -1,40 +1,41 @@
 # Created by https://www.toptal.com/developers/gitignore/api/nextjs
 # Edit at https://www.toptal.com/developers/gitignore?templates=nextjs
 
+### DEAF MAP ###
 ### NextJS ###
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+deaf-map/node_modules
+deaf-map/.pnp
+deaf-map.pnp.js
 
 # testing
-/coverage
+deaf-map/coverage
 
 # next.js
-/.next/
-/out/
+deaf-map/.next/
+deaf-map/out/
 
 # production
-/build
+deaf-map/build
 
 # misc
-.DS_Store
-*.pem
+deaf-map/.DS_Store
+deaf-map/*.pem
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+deaf-map/npm-debug.log*
+deaf-map/yarn-debug.log*
+deaf-map/yarn-error.log*
+deaf-map/.pnpm-debug.log*
 
 # local env files
-.env*.local
+deaf-map/.env*.local
 
 # vercel
-.vercel
+deaf-map/.vercel
 
 # typescript
-*.tsbuildinfo
-next-env.d.ts
+deaf-map/*.tsbuildinfo
+deaf-map/next-env.d.ts
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
