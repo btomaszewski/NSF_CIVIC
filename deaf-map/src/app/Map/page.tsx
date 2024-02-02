@@ -1,12 +1,12 @@
-'use client';
-import { useEffect, useRef } from 'react';
-import ArcMap from '@arcgis/core/Map';
+import dynamic from "next/dynamic";
 
-export default function Map(){
+//import MapViewer from "../../components/GIS/MapViewer";
+const MapViewer = dynamic(() => import("../../components/GIS/MapViewer"), {
+  ssr: false,
+});
 
-    const mapDiv = useRef(null);
+export default function Map() {
+  //const mapDiv = useRef(null);
 
-
-
-    return <p>This is a map</p>
+  return <MapViewer center={[-43.1566, 77.6088]}></MapViewer>;
 }
