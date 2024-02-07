@@ -8,7 +8,6 @@ import ArcLayer from "@arcgis/core/layers/Layer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import "./MapViewer.css";
-import { Input } from "postcss";
 
 type LayerType = "FeatureLayer" | "FeatureService" | "VectorTileLayer";
 
@@ -44,7 +43,6 @@ function LayerFactory(layers: LayerInput, map: Map) {
       case "FeatureService":
         let lServer: FeatureServer = layers as FeatureServer;
         for (let i = 0; i < lServer.count; i++) {
-          //console.log(lServer.url + `${i}`);
           map.add(new FeatureLayer({ url: lServer.url + `${i}` }), i);
         }
         break;
