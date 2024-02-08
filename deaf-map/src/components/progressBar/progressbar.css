@@ -1,0 +1,11 @@
+.progress-bar-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.progress-bar-rect {
+  --progress-bar-rect-width: 47.5px;
+  width: var(--progress-bar-rect-width, 10px);
+  height: 14px;
+  background-color: orange;
+}
