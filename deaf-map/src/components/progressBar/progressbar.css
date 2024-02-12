@@ -5,7 +5,11 @@
 
 .progress-bar-rect {
   --progress-bar-rect-width: 47.5px;
+  --progress-bar-rect-bg-color: orange;
   width: var(--progress-bar-rect-width, 10px);
   height: 14px;
-  background-color: orange;
+  background-color: var(--progress-bar-rect-bg-color);
+  transition-property: background-color;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
 }
