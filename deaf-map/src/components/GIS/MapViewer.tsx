@@ -27,6 +27,7 @@ interface MapViewerProps {
   center?: Array<number>;
   APIKey?: string;
   InputLayers?: LayerInput;
+  className?: string;
 }
 
 function LayerFactory(layers: LayerInput, map: Map) {
@@ -56,6 +57,7 @@ export default function MapViewer({
   center,
   APIKey,
   InputLayers,
+  className,
 }: MapViewerProps) {
   const mapDiv = useRef(null);
   if (APIKey) {
@@ -87,5 +89,9 @@ export default function MapViewer({
     }
   }, [mapDiv]);
 
-  return <div className="mapDiv" ref={mapDiv}></div>;
+  return (
+    <div className={`mapViewer-style-div ${className}`}>
+      <div className="mapDiv" ref={mapDiv}></div>;
+    </div>
+  );
 }
