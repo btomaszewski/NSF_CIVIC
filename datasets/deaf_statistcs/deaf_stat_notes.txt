@@ -1,0 +1,7 @@
+https://data.census.gov/all?q=hearing+loss+prevalence
+
+https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
+
+https://www.rit.edu/gccis/geoinfosciencecenter/nsf-civic
+
+https://storymaps.arcgis.com/stories/f140db0badbc44dcbc4ba08447c8849c
