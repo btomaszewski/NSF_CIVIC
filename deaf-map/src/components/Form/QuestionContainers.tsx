@@ -4,10 +4,16 @@ import { FormContext } from "./FormContext";
 import "./QuestionContainers.css";
 import { title } from "process";
 
+export type InputResponse = {
+  id: any;
+  input: any;
+};
+
 export interface BaseQuestionProps {
   id: any;
   title?: string;
   imgRef?: string;
+  submitData: (d: InputResponse) => void;
 }
 
 export function BooleanQuestion({ title }: BaseQuestionProps) {
@@ -19,15 +25,25 @@ export function BooleanQuestion({ title }: BaseQuestionProps) {
 export interface InputQuestionProps<T = string | number>
   extends BaseQuestionProps {
   initialValue: T;
+  validator: (d: T) => boolean;
 }
 
 export function InputQuestion<T = string | number>({
   title,
   initialValue,
+  validator,
+  submitData,
 }: InputQuestionProps) {
   const [inputValue, setInputValue] = useState(initialValue);
+  const [isValid, setIsValid] = useState(
+    validator ? validator(inputValue) : true
+  );
   return (
-    <BaseQuestion title={title} buttonComponent={SubmitButton}>
+    <BaseQuestion
+      title={title}
+      buttonComponent={SubmitButton}
+      buttonProps={{ submitData, canProgress: isValid, payload: inputValue }}
+    >
       <input
         type={typeof initialValue}
         pattern={typeof initialValue === "number" ? "[0-9]*" : ""}
@@ -35,8 +51,17 @@ export function InputQuestion<T = string | number>({
         onChange={(e) => {
           console.log(e.target.value);
           setInputValue(e.target.value);
+          setIsValid(
+            validator
+              ? validator(
+                  typeof initialValue === "number"
+                    ? e.target.valueAsNumber
+                    : e.target.value
+                )
+              : true
+          );
         }}
-        className="my-10"
+        className="form-input"
       ></input>
     </BaseQuestion>
   );
@@ -46,7 +71,8 @@ interface _BaseQuestionProps {
   title?: string;
   imgRef?: string;
   children?: ReactElement<BaseQuestionProps>;
-  buttonComponent: (props: FormButtonProps) => ReactElement<FormButtonProps>;
+  buttonComponent: (props: FormButtonProps) => ReactElement<FormButtonProps>; //Allows for context to be inherited
+  buttonProps?: FormButtonProps;
 }
 
 function BaseQuestion({
@@ -54,6 +80,7 @@ function BaseQuestion({
   imgRef,
   children,
   buttonComponent,
+  buttonProps,
 }: _BaseQuestionProps) {
   const { activePage, setActivePage } = useContext(FormContext);
   return (
@@ -66,7 +93,9 @@ function BaseQuestion({
 
       <div className="question-navigation">
         <FormContext.Provider value={{ activePage, setActivePage }}>
-          {buttonComponent({})}
+          {buttonComponent(
+            buttonProps ? buttonProps : { submitData: (d) => {} }
+          )}
         </FormContext.Provider>
 
         <button
@@ -84,9 +113,13 @@ function BaseQuestion({
   );
 }
 
-interface FormButtonProps {}
+interface FormButtonProps {
+  submitData: (d: any) => void;
+  canProgress?: boolean;
+  payload?: any;
+}
 
-function BoolButtons({}: FormButtonProps) {
+function BoolButtons({ submitData }: FormButtonProps) {
   const ctx = useContext(FormContext);
   return (
     <div>
@@ -96,6 +129,7 @@ function BoolButtons({}: FormButtonProps) {
           if (ctx.setActivePage) {
             console.log("pressed");
             ctx.setActivePage(ctx.activePage + 1);
+            submitData(true);
           }
         }}
       >
@@ -106,6 +140,7 @@ function BoolButtons({}: FormButtonProps) {
         onClick={(e) => {
           if (ctx.setActivePage) {
             ctx.setActivePage(ctx.activePage - 1);
+            submitData(false);
           }
         }}
       >
@@ -115,11 +150,21 @@ function BoolButtons({}: FormButtonProps) {
   );
 }
 
-function SubmitButton({}: FormButtonProps) {
+function SubmitButton({ submitData, canProgress, payload }: FormButtonProps) {
   const ctx = useContext(FormContext);
   return (
     <div>
-      <button className="form-button large-button mx-6">Submit</button>
+      <button
+        className="form-button large-button mx-6"
+        onClick={(e) => {
+          if (canProgress && ctx.setActivePage) {
+            ctx.setActivePage(ctx.activePage + 1);
+            submitData(payload);
+          }
+        }}
+      >
+        Submit
+      </button>
     </div>
   );
 }

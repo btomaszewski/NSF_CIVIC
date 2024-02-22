@@ -6,6 +6,7 @@ import {
   BaseQuestionProps,
   BooleanQuestion,
   InputQuestion,
+  InputResponse,
 } from "./QuestionContainers";
 import { FormContext } from "./FormContext";
 
@@ -13,7 +14,7 @@ interface FormContainerProps {
   children?:
     | ReactElement<BaseQuestionProps>
     | ReactElement<BaseQuestionProps>[];
-  onInput(i: InputResponse): boolean;
+  submitData: (i: InputResponse) => void;
   questions?: QuestionContent[];
 }
 
@@ -21,6 +22,7 @@ type QuestionContent = {
   title?: string;
   imgRef?: string;
   questionType: QuestionTypes;
+  validator?: (d: any) => boolean;
 };
 
 enum QuestionTypes {
@@ -29,11 +31,6 @@ enum QuestionTypes {
   num,
 }
 
-type InputResponse = {
-  id: any;
-  input: any;
-};
-
 var Question_Map = {
   [QuestionTypes.bool]: BooleanQuestion,
   [QuestionTypes.num]: InputQuestion,
@@ -41,7 +38,11 @@ var Question_Map = {
 };
 //Question_Map[QuestionTypes.bool] = BooleanQuestion;
 
-function FormContainer({ children, questions }: FormContainerProps) {
+function FormContainer({
+  children,
+  questions,
+  submitData,
+}: FormContainerProps) {
   if (questions && questions.length < 1 && !children) {
     return <p>Error, cannot have empty form</p>;
   }
@@ -54,7 +55,11 @@ function FormContainer({ children, questions }: FormContainerProps) {
     ? questions.map((q, i) => {
         switch (q.questionType) {
           case QuestionTypes.bool:
-            return Question_Map[q.questionType]({ id: i, title: q.title });
+            return Question_Map[q.questionType]({
+              id: i,
+              title: q.title,
+              submitData,
+            });
 
           case QuestionTypes.num:
           case QuestionTypes.str:
@@ -62,6 +67,8 @@ function FormContainer({ children, questions }: FormContainerProps) {
               id: i,
               title: q.title,
               initialValue: q.questionType == QuestionTypes.num ? 0 : "",
+              validator: q.validator ? q.validator : (_) => true, // If none specified always return true
+              submitData,
             });
         }
       })

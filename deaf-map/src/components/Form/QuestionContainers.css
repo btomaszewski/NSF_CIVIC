@@ -29,3 +29,12 @@
   display: grid;
   grid-template-rows: auto;
 }
+
+.form-input {
+  min-height: 50px;
+  color: black;
+  min-width: 312px;
+  margin: auto;
+  border-radius: 12px;
+  padding: 8px;
+}
