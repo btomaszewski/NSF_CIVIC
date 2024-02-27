@@ -53,6 +53,7 @@ function FormContainer({ questions }: FormContainerProps) {
   const [activePage, setActivePage] = useState(0);
 
   let submitData = (i: InputResponse) => {
+    console.log("Incoming Data: " + i);
     if (!questions) return;
     //console.log(i);
     questions[i.id].value = i.input;

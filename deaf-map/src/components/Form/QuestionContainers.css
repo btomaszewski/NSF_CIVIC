@@ -44,7 +44,7 @@
   width: 312px;
   color: white;
   background-color: gray;
-  margin: 18px 26px;
+  margin: 18px 40px;
   padding: 16px;
 }
 
@@ -52,6 +52,9 @@
   border-bottom-width: 2px;
   border-bottom-color: white;
   min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .question-navigation {

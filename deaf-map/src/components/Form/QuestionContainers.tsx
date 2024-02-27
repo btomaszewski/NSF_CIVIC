@@ -21,11 +21,12 @@ export interface BaseQuestionProps {
   submitData: (d: InputResponse) => void;
 }
 
-export function BooleanQuestion({ id, title }: BaseQuestionProps) {
+export function BooleanQuestion({ id, title, submitData }: BaseQuestionProps) {
   return (
     <BaseQuestion
       id={id}
       buttonComponent={BoolButtons}
+      buttonProps={{ submitData, id, canProgress: true }}
       title={title}
     ></BaseQuestion>
   );
@@ -110,7 +111,7 @@ export function SummaryQuestion({
                   {q.title}
                 </p>
                 <p key="value" className="text-lg">
-                  {q.value}
+                  {q.value.toString()}
                 </p>
               </div>
               <button
