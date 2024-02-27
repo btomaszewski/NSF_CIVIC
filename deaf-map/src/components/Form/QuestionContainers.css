@@ -38,3 +38,18 @@
   border-radius: 12px;
   padding: 8px;
 }
+
+.summary-box {
+  min-height: 181px;
+  width: 312px;
+  color: white;
+  background-color: gray;
+  margin: 18px 26px;
+  padding: 16px;
+}
+
+.info-review {
+  border-bottom-width: 2px;
+  border-bottom-color: white;
+  min-height: 80px;
+}

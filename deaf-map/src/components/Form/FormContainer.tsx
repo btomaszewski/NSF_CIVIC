@@ -7,15 +7,16 @@ import {
   BooleanQuestion,
   InputQuestion,
   InputResponse,
+  SummaryQuestion,
 } from "./QuestionContainers";
 import { FormContext } from "./FormContext";
+import { title } from "process";
 
 interface FormContainerProps {
-  children?:
-    | ReactElement<BaseQuestionProps>
-    | ReactElement<BaseQuestionProps>[];
-  submitData: (i: InputResponse) => void;
-  questions?: QuestionContent[];
+  // children?:
+  //   | ReactElement<BaseQuestionProps>
+  //   | ReactElement<BaseQuestionProps>[];
+  questions: QuestionContent[];
 }
 
 type QuestionContent = {
@@ -23,12 +24,14 @@ type QuestionContent = {
   imgRef?: string;
   questionType: QuestionTypes;
   validator?: (d: any) => boolean;
+  value: any; // Initial starting value
 };
 
 enum QuestionTypes {
   bool,
   str,
   num,
+  summary,
 }
 
 var Question_Map = {
@@ -38,12 +41,8 @@ var Question_Map = {
 };
 //Question_Map[QuestionTypes.bool] = BooleanQuestion;
 
-function FormContainer({
-  children,
-  questions,
-  submitData,
-}: FormContainerProps) {
-  if (questions && questions.length < 1 && !children) {
+function FormContainer({ questions }: FormContainerProps) {
+  if (questions && questions.length < 1) {
     return <p>Error, cannot have empty form</p>;
   }
 
@@ -51,34 +50,46 @@ function FormContainer({
   //     return <div>{children}</div>;
   //   }
 
-  let content = questions
-    ? questions.map((q, i) => {
-        switch (q.questionType) {
-          case QuestionTypes.bool:
-            return Question_Map[q.questionType]({
-              id: i,
-              title: q.title,
-              submitData,
-            });
-
-          case QuestionTypes.num:
-          case QuestionTypes.str:
-            return Question_Map[q.questionType]({
-              id: i,
-              title: q.title,
-              initialValue: q.questionType == QuestionTypes.num ? 0 : "",
-              validator: q.validator ? q.validator : (_) => true, // If none specified always return true
-              submitData,
-            });
-        }
-      })
-    : children
-    ? Array.isArray(children)
-      ? children
-      : [children]
-    : [<p>nothing here</p>];
-
   const [activePage, setActivePage] = useState(1);
+
+  let submitData = (i: InputResponse) => {
+    if (!questions) return;
+    //console.log(i);
+    questions[i.id].value = i.input;
+    console.log(questions[i.id]);
+  };
+
+  let content = questions.map((q, i) => {
+    switch (q.questionType) {
+      case QuestionTypes.bool:
+        return Question_Map[q.questionType]({
+          id: i,
+          title: q.title,
+          submitData,
+        });
+
+      case QuestionTypes.num:
+      case QuestionTypes.str:
+        return Question_Map[q.questionType]({
+          id: i,
+          title: q.title,
+          initialValue: q.value, //q.questionType == QuestionTypes.num ? 0 : "",
+          validator: q.validator ? q.validator : (_) => true, // If none specified always return true
+          submitData,
+        });
+    }
+  });
+  content.push(
+    SummaryQuestion({
+      id: content.length,
+      submitData,
+      questionList: questions.map((q, i) => {
+        return { id: i, title: q.title ? q.title : "", value: q.value };
+      }),
+      onEditPress: setActivePage,
+    })
+  );
+
   return (
     <div className="form-parent">
       <FormContext.Provider

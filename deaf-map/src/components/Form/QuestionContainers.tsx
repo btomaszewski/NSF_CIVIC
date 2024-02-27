@@ -1,24 +1,33 @@
-import { ReactElement, useContext, useState } from "react";
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { FormContext } from "./FormContext";
 
 import "./QuestionContainers.css";
-import { title } from "process";
 
 export type InputResponse = {
-  id: any;
+  id: number;
   input: any;
 };
 
 export interface BaseQuestionProps {
-  id: any;
+  id: number;
   title?: string;
   imgRef?: string;
   submitData: (d: InputResponse) => void;
 }
 
-export function BooleanQuestion({ title }: BaseQuestionProps) {
+export function BooleanQuestion({ id, title }: BaseQuestionProps) {
   return (
-    <BaseQuestion buttonComponent={BoolButtons} title={title}></BaseQuestion>
+    <BaseQuestion
+      id={id}
+      buttonComponent={BoolButtons}
+      title={title}
+    ></BaseQuestion>
   );
 }
 
@@ -29,6 +38,7 @@ export interface InputQuestionProps<T = string | number>
 }
 
 export function InputQuestion<T = string | number>({
+  id,
   title,
   initialValue,
   validator,
@@ -40,9 +50,15 @@ export function InputQuestion<T = string | number>({
   );
   return (
     <BaseQuestion
+      id={id}
       title={title}
       buttonComponent={SubmitButton}
-      buttonProps={{ submitData, canProgress: isValid, payload: inputValue }}
+      buttonProps={{
+        submitData,
+        canProgress: isValid,
+        payload: inputValue,
+        id,
+      }}
     >
       <input
         type={typeof initialValue}
@@ -67,7 +83,56 @@ export function InputQuestion<T = string | number>({
   );
 }
 
+export interface FormSubmitScreenProps extends BaseQuestionProps {
+  questionList: { id: any; title: string; value: any }[];
+  onEditPress: Dispatch<SetStateAction<number>>;
+}
+
+//Only a question in name
+export function SummaryQuestion({
+  id,
+  submitData,
+  questionList,
+  onEditPress,
+}: FormSubmitScreenProps) {
+  return (
+    <BaseQuestion
+      id={id}
+      title="Summary of your submission"
+      buttonComponent={SubmitButton}
+    >
+      <div className="summary-parent">
+        {questionList.map((q) => {
+          return (
+            <div key={q.id} className="summary-box">
+              <div className="info-review">
+                <p key={q.title} className="text-base text-center">
+                  {q.title}
+                </p>
+                <p key="value" className="text-lg">
+                  {q.value}
+                </p>
+              </div>
+              <button
+                className="form-button"
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  onEditPress(q.id);
+                }}
+              >
+                Edit
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </BaseQuestion>
+  );
+}
+
 interface _BaseQuestionProps {
+  id: number;
   title?: string;
   imgRef?: string;
   children?: ReactElement<BaseQuestionProps>;
@@ -87,14 +152,14 @@ function BaseQuestion({
     <div className="question-grid">
       <div className="question-content">
         <a className="text-center question-title my-4">{title}</a>
-
-        {imgRef ? <img src={imgRef}></img> : children}
+        {children}
+        {/* {imgRef ? <img src={imgRef}></img> : children} */}
       </div>
 
       <div className="question-navigation">
         <FormContext.Provider value={{ activePage, setActivePage }}>
           {buttonComponent(
-            buttonProps ? buttonProps : { submitData: (d) => {} }
+            buttonProps ? buttonProps : { id: -1, submitData: (d) => {} }
           )}
         </FormContext.Provider>
 
@@ -114,12 +179,13 @@ function BaseQuestion({
 }
 
 interface FormButtonProps {
-  submitData: (d: any) => void;
+  submitData: (d: InputResponse) => void;
   canProgress?: boolean;
   payload?: any;
+  id: number;
 }
 
-function BoolButtons({ submitData }: FormButtonProps) {
+function BoolButtons({ submitData, id }: FormButtonProps) {
   const ctx = useContext(FormContext);
   return (
     <div>
@@ -127,9 +193,8 @@ function BoolButtons({ submitData }: FormButtonProps) {
         className="bool-button form-button ml-6 mr-3"
         onClick={(e) => {
           if (ctx.setActivePage) {
-            console.log("pressed");
             ctx.setActivePage(ctx.activePage + 1);
-            submitData(true);
+            submitData({ id, input: true });
           }
         }}
       >
@@ -140,7 +205,7 @@ function BoolButtons({ submitData }: FormButtonProps) {
         onClick={(e) => {
           if (ctx.setActivePage) {
             ctx.setActivePage(ctx.activePage - 1);
-            submitData(false);
+            submitData({ id, input: false });
           }
         }}
       >
@@ -150,7 +215,12 @@ function BoolButtons({ submitData }: FormButtonProps) {
   );
 }
 
-function SubmitButton({ submitData, canProgress, payload }: FormButtonProps) {
+function SubmitButton({
+  submitData,
+  canProgress,
+  payload,
+  id,
+}: FormButtonProps) {
   const ctx = useContext(FormContext);
   return (
     <div>
@@ -159,7 +229,7 @@ function SubmitButton({ submitData, canProgress, payload }: FormButtonProps) {
         onClick={(e) => {
           if (canProgress && ctx.setActivePage) {
             ctx.setActivePage(ctx.activePage + 1);
-            submitData(payload);
+            submitData({ id, input: payload });
           }
         }}
       >
