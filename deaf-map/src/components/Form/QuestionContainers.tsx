@@ -164,7 +164,7 @@ function BaseQuestion({
         </FormContext.Provider>
 
         <button
-          className="form-button large-button mx-6"
+          className="form-button large-button mx-10"
           onClick={(e) => {
             if (setActivePage) {
               setActivePage(activePage - 1);
@@ -190,7 +190,7 @@ function BoolButtons({ submitData, id }: FormButtonProps) {
   return (
     <div>
       <button
-        className="bool-button form-button ml-6 mr-3"
+        className="bool-button form-button ml-10 mr-3"
         onClick={(e) => {
           if (ctx.setActivePage) {
             ctx.setActivePage(ctx.activePage + 1);
@@ -201,7 +201,7 @@ function BoolButtons({ submitData, id }: FormButtonProps) {
         Yes
       </button>
       <button
-        className="bool-button form-button mr-6 ml-3"
+        className="bool-button form-button mr-10 ml-3"
         onClick={(e) => {
           if (ctx.setActivePage) {
             ctx.setActivePage(ctx.activePage - 1);
@@ -225,7 +225,7 @@ function SubmitButton({
   return (
     <div>
       <button
-        className="form-button large-button mx-6"
+        className="form-button large-button mx-10"
         onClick={(e) => {
           if (canProgress && ctx.setActivePage) {
             ctx.setActivePage(ctx.activePage + 1);

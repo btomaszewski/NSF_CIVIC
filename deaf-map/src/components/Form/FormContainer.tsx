@@ -50,7 +50,7 @@ function FormContainer({ questions }: FormContainerProps) {
   //     return <div>{children}</div>;
   //   }
 
-  const [activePage, setActivePage] = useState(1);
+  const [activePage, setActivePage] = useState(0);
 
   let submitData = (i: InputResponse) => {
     if (!questions) return;
