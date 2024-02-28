@@ -9,7 +9,7 @@
 }
 
 .form-button {
-  background-color: gray;
+  background-color: rgb(var(--button-background-rgb));
   text-align: center;
   font-size: medium;
   min-height: 50px;
@@ -27,12 +27,12 @@
 
 .question-content {
   display: grid;
-  grid-template-rows: auto;
+  grid-template-rows: auto 80%;
 }
 
 .form-input {
   min-height: 50px;
-  color: black;
+  color: var(--foreground-rgb);
   min-width: 312px;
   margin: auto;
   border-radius: 12px;
@@ -42,15 +42,15 @@
 .summary-box {
   min-height: 181px;
   width: 312px;
-  color: white;
-  background-color: gray;
+  color: rgb(var(--foreground-rgb));
+  background-color: rgb(var(--tertiary-rgb));
   margin: 18px 40px;
   padding: 16px;
 }
 
 .info-review {
   border-bottom-width: 2px;
-  border-bottom-color: white;
+  border-bottom-color: rgb(var(--foreground-rgb));
   min-height: 80px;
   display: flex;
   flex-direction: column;
@@ -62,4 +62,21 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
+}
+
+.radio-button {
+  border-radius: 5px;
+  background-color: rgb(var(--button-background-rgb));
+  width: 162px;
+  height: 80px;
+  margin: 8px;
+}
+
+.radio-parent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }

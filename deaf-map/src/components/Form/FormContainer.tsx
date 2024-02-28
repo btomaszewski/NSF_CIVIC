@@ -7,6 +7,7 @@ import {
   BooleanQuestion,
   InputQuestion,
   InputResponse,
+  RadioButtonQuestion,
   SummaryQuestion,
 } from "./QuestionContainers";
 import { FormContext } from "./FormContext";
@@ -25,6 +26,12 @@ type QuestionContent = {
   questionType: QuestionTypes;
   validator?: (d: any) => boolean;
   value: any; // Initial starting value
+  options?: OptionChoice[]; //Options for multiple choice questions
+};
+
+type OptionChoice = {
+  text: string;
+  imgRef?: string;
 };
 
 enum QuestionTypes {
@@ -32,12 +39,14 @@ enum QuestionTypes {
   str,
   num,
   summary,
+  multi,
 }
 
 var Question_Map = {
   [QuestionTypes.bool]: BooleanQuestion,
   [QuestionTypes.num]: InputQuestion,
   [QuestionTypes.str]: InputQuestion,
+  [QuestionTypes.multi]: RadioButtonQuestion,
 };
 //Question_Map[QuestionTypes.bool] = BooleanQuestion;
 
@@ -53,11 +62,14 @@ function FormContainer({ questions }: FormContainerProps) {
   const [activePage, setActivePage] = useState(0);
 
   let submitData = (i: InputResponse) => {
-    console.log("Incoming Data: " + i);
     if (!questions) return;
-    //console.log(i);
-    questions[i.id].value = i.input;
-    console.log(questions[i.id]);
+    if (i.id < 0) {
+      setActivePage(Math.max(0, activePage - 1));
+    } else {
+      questions[i.id].value = i.input;
+      console.log(questions[i.id]);
+      setActivePage(Math.min(questions.length, activePage + 1));
+    }
   };
 
   let content = questions.map((q, i) => {
@@ -67,8 +79,22 @@ function FormContainer({ questions }: FormContainerProps) {
           id: i,
           title: q.title,
           submitData,
+          imgRef: q.imgRef,
         });
-
+      case QuestionTypes.multi:
+        if (!q.options) {
+          console.warn("Options should be present for multi-type questions");
+          return;
+        }
+        return Question_Map[q.questionType]({
+          id: i,
+          title: q.title,
+          imgRef: q.imgRef,
+          submitData,
+          options: q.options.map((o, j) => {
+            return { id: j, title: o.text, imgRef: o.imgRef };
+          }),
+        });
       case QuestionTypes.num:
       case QuestionTypes.str:
         return Question_Map[q.questionType]({
@@ -77,6 +103,7 @@ function FormContainer({ questions }: FormContainerProps) {
           initialValue: q.value, //q.questionType == QuestionTypes.num ? 0 : "",
           validator: q.validator ? q.validator : (_) => true, // If none specified always return true
           submitData,
+          imgRef: q.imgRef,
         });
     }
   });
@@ -85,7 +112,34 @@ function FormContainer({ questions }: FormContainerProps) {
       id: content.length,
       submitData,
       questionList: questions.map((q, i) => {
-        return { id: i, title: q.title ? q.title : "", value: q.value };
+        let presentation: JSX.Element;
+        switch (q.questionType) {
+          case QuestionTypes.bool:
+            presentation = <p>{q.value ? "Yes" : "No"}</p>;
+            break;
+          case QuestionTypes.num:
+          case QuestionTypes.str:
+            presentation = <p>{q.value}</p>;
+            break;
+          case QuestionTypes.multi:
+            presentation = q.options ? (
+              <div>
+                <img src={q.options[q.value].imgRef} />
+                <p>{q.options[q.value].text}</p>
+              </div>
+            ) : (
+              <></>
+            );
+            break;
+          default:
+            presentation = <></>;
+            break;
+        }
+        return {
+          id: i,
+          title: q.title ? q.title : "",
+          presentation: presentation,
+        };
       }),
       onEditPress: setActivePage,
     })

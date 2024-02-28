@@ -1,3 +1,11 @@
+/*
+QuestionContainter.tsx
+
+Description: Contains all of the question components for use in the forms
+
+TODO: remove the use of context, introduce props to pass events down instead, redundancy is being introduced with question-content 
+needing the same functionality
+*/
 import {
   Dispatch,
   ReactElement,
@@ -5,7 +13,6 @@ import {
   useContext,
   useState,
 } from "react";
-import { FormContext } from "./FormContext";
 
 import "./QuestionContainers.css";
 
@@ -14,20 +21,29 @@ export type InputResponse = {
   input: any;
 };
 
-export interface BaseQuestionProps {
-  id: number;
-  title?: string;
-  imgRef?: string;
+export interface BaseQuestionProps extends CoreInformation {
   submitData: (d: InputResponse) => void;
 }
 
-export function BooleanQuestion({ id, title, submitData }: BaseQuestionProps) {
+export interface CoreInformation {
+  id: number;
+  title?: string;
+  imgRef?: string;
+}
+
+export function BooleanQuestion({
+  id,
+  title,
+  submitData,
+  imgRef,
+}: BaseQuestionProps) {
   return (
     <BaseQuestion
       id={id}
       buttonComponent={BoolButtons}
       buttonProps={{ submitData, id, canProgress: true }}
       title={title}
+      imgRef={imgRef}
     ></BaseQuestion>
   );
 }
@@ -44,6 +60,7 @@ export function InputQuestion<T = string | number>({
   initialValue,
   validator,
   submitData,
+  imgRef,
 }: InputQuestionProps) {
   const [inputValue, setInputValue] = useState(initialValue);
   const [isValid, setIsValid] = useState(
@@ -53,6 +70,7 @@ export function InputQuestion<T = string | number>({
     <BaseQuestion
       id={id}
       title={title}
+      imgRef={imgRef}
       buttonComponent={SubmitButton}
       buttonProps={{
         submitData,
@@ -85,7 +103,7 @@ export function InputQuestion<T = string | number>({
 }
 
 export interface FormSubmitScreenProps extends BaseQuestionProps {
-  questionList: { id: any; title: string; value: any }[];
+  questionList: { id: any; title: string; presentation: ReactElement }[];
   onEditPress: Dispatch<SetStateAction<number>>;
 }
 
@@ -101,6 +119,7 @@ export function SummaryQuestion({
       id={id}
       title="Summary of your submission"
       buttonComponent={SubmitButton}
+      buttonProps={{ id, submitData }}
     >
       <div className="summary-parent">
         {questionList.map((q) => {
@@ -110,9 +129,7 @@ export function SummaryQuestion({
                 <p key={q.title} className="text-base text-center">
                   {q.title}
                 </p>
-                <p key="value" className="text-lg">
-                  {q.value.toString()}
-                </p>
+                {q.presentation}
               </div>
               <button
                 className="form-button"
@@ -132,13 +149,52 @@ export function SummaryQuestion({
   );
 }
 
+export interface RadioButtonQuestionProps extends BaseQuestionProps {
+  options: CoreInformation[];
+}
+export function RadioButtonQuestion({
+  title,
+  imgRef,
+  id,
+  options,
+  submitData,
+}: RadioButtonQuestionProps) {
+  return (
+    <BaseQuestion
+      id={id}
+      title={title}
+      imgRef={imgRef}
+      buttonProps={{ id, submitData }}
+    >
+      <div className="radio-parent">
+        {options.map((o) => {
+          return (
+            <button
+              key={o.id}
+              className="radio-button"
+              onClick={(e) => {
+                e.preventDefault();
+                submitData({ id: id, input: o.id });
+              }}
+            >
+              <div>
+                <img src={o.imgRef}></img> <p>{o.title}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </BaseQuestion>
+  );
+}
+
 interface _BaseQuestionProps {
   id: number;
   title?: string;
   imgRef?: string;
   children?: ReactElement<BaseQuestionProps>;
-  buttonComponent: (props: FormButtonProps) => ReactElement<FormButtonProps>; //Allows for context to be inherited
-  buttonProps?: FormButtonProps;
+  buttonComponent?: (props: FormButtonProps) => ReactElement<FormButtonProps>; //Allows for context to be inherited
+  buttonProps: FormButtonProps;
 }
 
 function BaseQuestion({
@@ -148,32 +204,27 @@ function BaseQuestion({
   buttonComponent,
   buttonProps,
 }: _BaseQuestionProps) {
-  const { activePage, setActivePage } = useContext(FormContext);
   return (
     <div className="question-grid">
       <div className="question-content">
-        <a className="text-center question-title my-4">{title}</a>
+        <>
+          {imgRef ? <img src={imgRef}></img> : <></>}
+          <a className="text-center question-title my-4">{title}</a>
+        </>
         {children}
         {/* {imgRef ? <img src={imgRef}></img> : children} */}
       </div>
 
       <div className="question-navigation">
-        <FormContext.Provider value={{ activePage, setActivePage }}>
-          {buttonComponent(
+        {buttonComponent ? (
+          buttonComponent(
             buttonProps ? buttonProps : { id: -1, submitData: (d) => {} }
-          )}
-        </FormContext.Provider>
+          )
+        ) : (
+          <></>
+        )}
 
-        <button
-          className="form-button large-button mx-10"
-          onClick={(e) => {
-            if (setActivePage) {
-              setActivePage(activePage - 1);
-            }
-          }}
-        >
-          Back
-        </button>
+        <BackFormButton {...buttonProps} />
       </div>
     </div>
   );
@@ -187,16 +238,12 @@ interface FormButtonProps {
 }
 
 function BoolButtons({ submitData, id }: FormButtonProps) {
-  const ctx = useContext(FormContext);
   return (
     <div>
       <button
         className="bool-button form-button ml-10 mr-3"
         onClick={(e) => {
-          if (ctx.setActivePage) {
-            ctx.setActivePage(ctx.activePage + 1);
-            submitData({ id, input: true });
-          }
+          submitData({ id, input: true });
         }}
       >
         Yes
@@ -204,10 +251,7 @@ function BoolButtons({ submitData, id }: FormButtonProps) {
       <button
         className="bool-button form-button mr-10 ml-3"
         onClick={(e) => {
-          if (ctx.setActivePage) {
-            ctx.setActivePage(ctx.activePage - 1);
-            submitData({ id, input: false });
-          }
+          submitData({ id, input: false });
         }}
       >
         No
@@ -222,20 +266,29 @@ function SubmitButton({
   payload,
   id,
 }: FormButtonProps) {
-  const ctx = useContext(FormContext);
   return (
     <div>
       <button
         className="form-button large-button mx-10"
         onClick={(e) => {
-          if (canProgress && ctx.setActivePage) {
-            ctx.setActivePage(ctx.activePage + 1);
-            submitData({ id, input: payload });
-          }
+          submitData({ id, input: payload });
         }}
       >
         Submit
       </button>
     </div>
+  );
+}
+
+function BackFormButton({ submitData }: FormButtonProps) {
+  return (
+    <button
+      className="form-button large-button mx-10"
+      onClick={(e) => {
+        submitData({ id: -1, input: null });
+      }}
+    >
+      Back
+    </button>
   );
 }
