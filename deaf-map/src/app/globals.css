@@ -7,7 +7,10 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
   --button-background-rgb: 43, 43, 43;
+  --summary-edit-button-rgb: 43, 43, 43;
   --tertiary-rgb: 117, 117, 117;
+  --progress-bar-bg-filled: 43, 43, 43;
+  --progress-bar-bg-empty: 148, 148, 148;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,7 +19,10 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
     --button-background-rgb: 180, 180, 180;
+    --summary-edit-button-rgb: 43, 43, 43;
     --tertiary-rgb: 117, 117, 117;
+    --progress-bar-bg-filled: 200, 200, 200;
+    --progress-bar-bg-empty: 148, 148, 148;
   }
 }
 

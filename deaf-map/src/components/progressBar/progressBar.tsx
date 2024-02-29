@@ -23,7 +23,10 @@ export default function ProgressBar({
   for (let i = 0; i < steps; i++) {
     let barStyle: ProgressBarCSS = {
       "--progress-bar-rect-width": `${Math.floor(100 / steps)}%`,
-      "--progress-bar-rect-bg-color": i < current ? "orange" : "pink",
+      "--progress-bar-rect-bg-color":
+        i < current
+          ? "rgb(var(--progress-bar-bg-filled))"
+          : "rgb(var(--progress-bar-bg-empty))",
     };
 
     bars.push(
