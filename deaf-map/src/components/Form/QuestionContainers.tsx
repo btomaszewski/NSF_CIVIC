@@ -132,7 +132,7 @@ export function SummaryQuestion({
                 {q.presentation}
               </div>
               <button
-                className="form-button"
+                className="summary-button form-button"
                 onClick={(e) => {
                   e.preventDefault();
 

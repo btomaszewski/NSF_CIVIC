@@ -12,7 +12,7 @@
   background-color: rgb(var(--button-background-rgb));
   text-align: center;
   font-size: medium;
-  min-height: 50px;
+  height: 50px;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -27,12 +27,12 @@
 
 .question-content {
   display: grid;
-  grid-template-rows: auto 80%;
+  grid-template-rows: auto 90%;
 }
 
 .form-input {
   min-height: 50px;
-  color: var(--foreground-rgb);
+  color: black;
   min-width: 312px;
   margin: auto;
   border-radius: 12px;
@@ -61,7 +61,8 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 25px;
 }
 
 .radio-button {
@@ -79,4 +80,14 @@
   align-content: center;
   justify-content: center;
   align-items: center;
+}
+
+.summary-button {
+  background-color: rgb(var(--summary-edit-button-rgb));
+  width: 90px;
+  height: 30px;
+}
+
+.summary-parent {
+  overflow: scroll;
 }
