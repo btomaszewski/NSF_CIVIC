@@ -1,0 +1,12 @@
+input {
+  width: var(--long-width);
+  margin: 10px auto;
+}
+
+.sign-in-button {
+  width: var(--long-width);
+  background-color: rgb(var(--button-background-rgb));
+  color: rgb(var(--button-foreground-rgb));
+  margin-top: 20px;
+  height: 50px;
+}
