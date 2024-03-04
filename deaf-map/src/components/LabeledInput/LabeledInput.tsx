@@ -5,7 +5,7 @@ import { ChangeEventHandler, ReactElement } from "react";
 import "./LabeledInput.css";
 
 interface LabeledInputProps {
-  label: string;
+  label?: string;
   pattern?: string;
   value: string | number;
   onChange: ChangeEventHandler<HTMLInputElement>;

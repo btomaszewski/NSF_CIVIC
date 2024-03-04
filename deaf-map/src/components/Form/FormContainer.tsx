@@ -27,6 +27,7 @@ type QuestionContent = {
   validator?: (d: any) => boolean;
   value: any; // Initial starting value
   options?: OptionChoice[]; //Options for multiple choice questions
+  label?: string;
 };
 
 type OptionChoice = {
@@ -104,6 +105,7 @@ function FormContainer({ questions }: FormContainerProps) {
           validator: q.validator ? q.validator : (_) => true, // If none specified always return true
           submitData,
           imgRef: q.imgRef,
+          label: q.label,
         });
     }
   });

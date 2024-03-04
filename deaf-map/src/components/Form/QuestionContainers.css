@@ -30,12 +30,6 @@
   grid-template-rows: auto 90%;
 }
 
-.form-input {
-  min-height: 50px;
-  min-width: var(--long-width);
-  margin: auto;
-}
-
 .summary-box {
   min-height: 181px;
   width: var(--long-width);

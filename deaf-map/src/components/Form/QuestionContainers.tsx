@@ -15,6 +15,7 @@ import {
 } from "react";
 
 import "./QuestionContainers.css";
+import LabeledInput from "../LabeledInput/LabeledInput";
 
 export type InputResponse = {
   id: number;
@@ -52,6 +53,7 @@ export interface InputQuestionProps<T = string | number>
   extends BaseQuestionProps {
   initialValue: T;
   validator: (d: T) => boolean;
+  label?: string;
 }
 
 export function InputQuestion<T = string | number>({
@@ -61,6 +63,7 @@ export function InputQuestion<T = string | number>({
   validator,
   submitData,
   imgRef,
+  label,
 }: InputQuestionProps) {
   const [inputValue, setInputValue] = useState(initialValue);
   const [isValid, setIsValid] = useState(
@@ -79,7 +82,8 @@ export function InputQuestion<T = string | number>({
         id,
       }}
     >
-      <input
+      <LabeledInput
+        label={label}
         type={typeof initialValue}
         pattern={typeof initialValue === "number" ? "[0-9]*" : ""}
         value={inputValue}
@@ -96,8 +100,7 @@ export function InputQuestion<T = string | number>({
               : true
           );
         }}
-        className="form-input"
-      ></input>
+      ></LabeledInput>
     </BaseQuestion>
   );
 }
