@@ -38,6 +38,8 @@ body {
 
 input {
   color: black;
+  border-radius: 12px;
+  padding: 8px;
 }
 
 @layer utilities {
