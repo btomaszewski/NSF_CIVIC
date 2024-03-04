@@ -33,7 +33,5 @@ input {
   border-width: 1.5px;
   min-height: 50px;
   min-width: var(--long-width);
-  margin: auto;
-  min-width: var(--long-width);
-  margin: auto;
+  margin: 10px auto;
 }
