@@ -40,3 +40,4 @@ deaf-map/next-env.d.ts
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
 deaf-map/deaf-map-e175e-firebase-adminsdk-lfljq-0bb0cd34c2.json
+deaf-map/src/app/auth/[...nextauth]/deaf-map-e175e-firebase-adminsdk-lfljq-0bb0cd34c2.json
