@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/util/NavBar";
+import { Login } from "@/components/login/Login";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,7 @@ export default function RootLayout({
           <div className="ml-4 flex items-baseline space-x-4"></div> 
   </div>*/}
         {/* <NavBar></NavBar> */}
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );
