@@ -12,6 +12,7 @@
   "dependencies": {
     "@arcgis/core": "^4.28.10",
     "@auth/firebase-adapter": "^1.5.0",
+    "@esri/calcite-components-react": "^2.6.0",
     "@headlessui/react": "^1.7.18",
     "firebase": "^10.8.1",
     "firebase-admin": "^11.11.1",
