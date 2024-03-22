@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import NavBar from "@/components/util/NavBar";
-import { Login } from "@/components/login/Login";
+import { Roboto, Open_Sans } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+import "./globals.css";
+import "@esri/calcite-components/dist/calcite/calcite.css";
+
+// Local assets
+
+const roboto = Roboto({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-roboto",
+});
+const open_sans = Open_Sans({
+  weight: ["800", "600"],
+  subsets: ["latin"],
+  variable: "--font-open_sans",
+});
 
 export const metadata: Metadata = {
   title: "Deaf-Map",
@@ -18,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${roboto.variable} ${open_sans.variable}`}>
         {/* Header Bar */}
         {/*<div className="flex h-10 items-center mx-auto bg-orange-500 rounded">
            <a className="mx-2">Deaf-Map</a>
