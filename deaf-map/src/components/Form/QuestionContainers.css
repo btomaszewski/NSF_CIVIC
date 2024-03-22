@@ -9,6 +9,7 @@
 }
 
 .form-button {
+  color: white;
   background-color: rgb(var(--button-background-rgb));
   text-align: center;
   font-size: medium;
