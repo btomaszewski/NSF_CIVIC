@@ -22,7 +22,7 @@ export default function LabeledInput({
   return (
     <div className="labeled-input-container">
       <input onChange={onChange} pattern={pattern} value={value} type={type} />
-      <label>{label}</label>
+      <label className={value ? "input-filled" : ""}>{label}</label>
     </div>
   );
 }

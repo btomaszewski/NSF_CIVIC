@@ -35,3 +35,12 @@ input {
   min-width: var(--long-width);
   margin: 10px auto;
 }
+
+.labeled-input-container .input-filled {
+  border-radius: 8px;
+  padding: 6px;
+  font-size: smaller;
+  transform: translate(30px, 2px) scale(0.8);
+  color: white;
+  background-color: rgb(var(--button-background-rgb));
+}
