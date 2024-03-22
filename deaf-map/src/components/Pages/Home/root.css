@@ -20,7 +20,7 @@
   justify-content: space-between;
   width: var(--long-width);
   min-height: 140px;
-  font-weight: 300;
+
   font-size: smaller;
   color: rgb(var(--button-foreground-rgb));
   margin: 10px;
@@ -42,4 +42,14 @@
 
 .reject-button {
   color: rgb(var(--button-background-rgb));
+}
+
+.action-item-container p {
+  font-family: var(--font-open_sans);
+  font-weight: 800;
+}
+
+.action-item-container button {
+  font-family: var(--font-roboto);
+  font-weight: 700;
 }
