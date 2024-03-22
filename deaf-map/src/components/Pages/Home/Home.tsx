@@ -3,6 +3,7 @@ import Image from "next/image";
 import "./root.css";
 import { useSession } from "next-auth/react";
 import AccessDenied from "../Access/AcessDenied";
+import Link from "next/link";
 
 export default function Home() {
   //const { data: session, status } = useSession();
@@ -15,13 +16,15 @@ export default function Home() {
     <div className="main-div">
       {/* <h1 className="title-text">Emergency Official/Volunteer Login</h1>
       <Login /> */}
-      <Image
-        src={"./Report_Button.svg"}
-        alt="Report Button"
-        height={140}
-        width={140}
-        className="mb-12"
-      />
+      <Link href="/Map">
+        <Image
+          src={"./Report_Button.svg"}
+          alt="Report Button"
+          height={140}
+          width={140}
+          className="mb-12"
+        />
+      </Link>
 
       <div className="action-item-container">
         <p className="mb-8">Submit Accessibility Form</p>
