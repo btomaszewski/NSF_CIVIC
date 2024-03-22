@@ -31,6 +31,9 @@ export const config = {
     }),
   ],
   basePath: "/api/auth",
+  // pages: {
+  //   signIn: "/login",
+  // },
   callbacks: {
     authorized({ request, auth }) {
       return true;
