@@ -6,92 +6,69 @@ import MapView from "@arcgis/core/views/MapView";
 import config from "@arcgis/core/config";
 import ArcLayer from "@arcgis/core/layers/Layer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import { setAssetPath } from "@esri/calcite-components/dist/components";
 
 import "./MapViewer.css";
+import { useMapDispatch, useMapState } from "./Hooks/useMapDispatch";
+import { MapActionTypes } from "./MapContext";
 
-type LayerType = "FeatureLayer" | "FeatureService" | "VectorTileLayer";
-
-export interface BaseLayer {
-  url: string;
-  serviceType: LayerType;
-}
-
-export interface FeatureServer extends BaseLayer {
-  count: number;
-}
-//interface FeatureLayer extends BaseLayer {}
-
-type LayerInput = BaseLayer[] | BaseLayer;
-
-interface MapViewerProps {
-  center?: Array<number>;
-  APIKey?: string;
-  InputLayers?: LayerInput;
-  className?: string;
-}
-
-function LayerFactory(layers: LayerInput, map: Map) {
-  if (Array.isArray(layers)) {
-    for (let index = 0; index < layers.length; index++) {
-      const layer = layers[index];
-      LayerFactory(layer, map);
-    }
-  } else {
-    switch (layers.serviceType) {
-      case "FeatureLayer":
-        map.add(new FeatureLayer({ url: layers.url }));
-        break;
-      case "FeatureService":
-        let lServer: FeatureServer = layers as FeatureServer;
-        for (let i = 0; i < lServer.count; i++) {
-          map.add(new FeatureLayer({ url: lServer.url + `${i}` }), i);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-export default function MapViewer({
-  center,
-  APIKey,
-  InputLayers,
-  className,
-}: MapViewerProps) {
+export default function MapViewer({}) {
+  const mapState = useMapState();
   const mapDiv = useRef(null);
-  if (APIKey) {
-    config.apiKey = APIKey;
-  } else {
-    console.warn("No API Key defined, functionality might be reduced");
-  }
+  const mapDispatch = useMapDispatch();
+
+  useEffect(() => {
+    if (mapState.APIKey) {
+      config.apiKey = mapState.APIKey;
+    }
+  }, [mapState.APIKey]);
+
+  useEffect(() => {
+    setAssetPath(window.location.href);
+  }, []);
 
   useEffect(() => {
     if (mapDiv.current) {
-      const map = new Map({
-        basemap: "streets-vector",
-      });
-
-      if (InputLayers) {
-        LayerFactory(InputLayers, map);
-      }
-
       const view = new MapView({
         container: mapDiv.current,
-        map: map,
-        center: center,
-        zoom: 12,
+        map: mapState.map,
+        center: mapState.center,
+        zoom: mapState.zoomLevel, //mapState.zoomLevel,
       });
 
-      view.when(() => {
-        console.log("Map Loaded, center: " + center);
-      });
+      view
+        .when(() => {
+          console.log(
+            "Map Loaded, center: " +
+              mapState.center +
+              " Zoom Level:" +
+              mapState.zoomLevel
+          );
+        })
+        .catch((error) => {
+          console.error("Map loading error: ", error);
+        });
+
+      mapDispatch({ type: MapActionTypes.InitView, value: view });
+    } else {
+      console.warn("Map Div not available");
     }
   }, [mapDiv]);
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((p) => {
+      const { latitude, longitude } = p.coords;
+      mapDispatch({
+        type: MapActionTypes.SetCenter,
+        value: [longitude, latitude],
+      });
+    });
+  });
+
   return (
-    <div className={`mapViewer-style-div ${className}`}>
-      <div className="mapDiv" ref={mapDiv}></div>;
+    <div className={`mapViewer-style-div`}>
+      <div className="mapDiv" ref={mapDiv}></div>
+      {/* <FilterDisplay /> */}
     </div>
   );
 }
